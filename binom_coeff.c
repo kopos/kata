@@ -39,6 +39,16 @@
 
 long bc[MAX][MAX];
 
+///
+// Function Prototypes
+///
+long factorial(int);
+long binom_coeff(int, int);
+long binom_coeff_r(int, int);
+void init(int, int);
+long binom_coeff_cache(int, int);
+long bingo_coeff_dp(int, int);
+
 long factorial(int n) {
     long f = 1;
 

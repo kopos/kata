@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-std=c99
+CFLAGS=-Wall -pedantic -std=iso9899:1999 -Wshadow -Wpointer-arith \
+	-Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wconversion
 
 binom_coeff:	binom_coeff.c
 	$(CC) $(CFLAGS) binom_coeff.c -o binom_coeff

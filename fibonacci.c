@@ -14,8 +14,17 @@
 
 int FIB[MAX];
 
-void init() {
-    for (int n = 0; n < MAX; ++n) {
+///
+// Prototypes
+///
+void init(int);
+int fib_dp(int);
+int fib(int);
+int fib_i(int);
+int fib_r(int);
+
+void init(int max) {
+    for (int n = 0; n < max; ++n) {
         FIB[n] = UNKNOWN;
     }
 }
@@ -89,7 +98,7 @@ int main(int argc, char *argv[]) {
     int n = 0;
     if (argc > 1)
         n = atoi(argv[1]);
-    init();
+    init(MAX);
 
     printf("%d\n", fib_dp(n));
 

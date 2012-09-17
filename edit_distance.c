@@ -18,9 +18,19 @@
 #define uint unsigned int
 #endif
 
+#define MATCH  0
+#define INSERT 1
+#define DELETE 2
+
 #define MAX 32
 
 int ed[MAX][MAX];
+
+typedef struct {
+    int cost;
+    int parent;
+} cell;
+cell m[MAX + 1][MAX + 1];
 
 ///
 // Function prototypes
@@ -33,6 +43,10 @@ int match(char, char);
 int edit_distance(char *, char *, uint, uint);
 int edit_distance2(char *, char *, uint, uint);
 void init(char *, char *);
+int edit_distance3(char *, char *);
+void row_init(int);
+void column_init(int);
+void goal_cell(char *, char *, int *, int *);
 
 ///
 // insert cost
@@ -49,7 +63,7 @@ int del(char c) { return 1; }
 ///
 int match(char c1, char c2) {
     if (c1 == c2) return 0;
-    return 2;
+    return 1;
 }
 
 int min(int a, int b) {
@@ -109,13 +123,70 @@ void init(char *s1, char *s2) {
             ed[i][j] = -1;
 }
 
+///
+// Version 3: Dynamic programming version
+///
+int edit_distance3(char *s1, char *s2) {
+    int i, j;
+    int opt[3];
+
+    for (i = 0; i < MAX; ++i) {
+        row_init(i);
+        column_init(i);
+    }
+
+    for (i = 1; i < strlen(s1); ++i) {
+        for (j = 1; j < strlen(s2); ++j) {
+            opt[MATCH] = m[i - 1][j - 1].cost + match(s1[i], s2[j]);
+            opt[INSERT] = m[i][j - 1].cost + del(s2[j]);
+            opt[DELETE] = m[i - 1][j].cost + ins(s1[i]);
+
+            m[i][j].cost = opt[MATCH];
+            m[i][j].parent = MATCH;
+            for(int k = INSERT; k <= DELETE; ++k) {
+                if (opt[k] < m[i][j].cost) {
+                    m[i][j].cost = opt[k];
+                    m[i][j].parent = k;
+                }
+            }
+        }
+    }
+
+    goal_cell(s1, s2, &i, &j);
+    return m[i][j].cost;
+}
+
+void row_init(int i) {
+    m[0][i].cost = i;
+
+    if (i > 0)
+        m[0][i].parent = INSERT;
+    else
+        m[0][i].parent = -1;
+}
+
+void column_init(int i) {
+    m[i][0].cost = i;
+
+    if (i > 0)
+        m[i][0].parent = DELETE;
+    else
+        m[i][0].parent = -1;
+}
+
+void goal_cell(char *s1, char *s2, int *i, int *j) {
+    *i = (int) strlen(s1) - 1;
+    *j = (int) strlen(s2) - 1;
+}
+
 int main(int argc, char **argv) {
-    char s1[] = "smith will";
-    char s2[] = "bruce willis";
+    char s1[] = "adam smith";
+    char s2[] = "will smith";
 
     init(s1, s2);
 
-    printf("edit distance: %d\n", edit_distance2(s1, s2, strlen(s1), strlen(s2)));
+    //printf("edit distance: %d\n", edit_distance2(s1, s2, strlen(s1), strlen(s2)));
+    printf("edit distance: %d\n", edit_distance3(s1, s2));
 
     return 0;
 }

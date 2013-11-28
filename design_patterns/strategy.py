@@ -1,3 +1,6 @@
+"""
+Program to a interface not to an implementation
+"""
 class Strategy:
     def execute(a, b):
         pass

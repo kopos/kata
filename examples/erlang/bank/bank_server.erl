@@ -1,15 +1,15 @@
 -module(bank_server).
--export([start/0, stop/0]).
+-export([start/1, stop/1]).
 
 -define(PORT, 3010).
 
-start() ->
+start(Port) ->
     mnesia:start(),
-    spawn_link(fun() -> server(?PORT) end).
+    spawn_link(fun() -> server(Port) end).
 
-stop() ->
+stop(Port) ->
     mnesia:stop(),
-    tcp_server:stop(?PORT).
+    tcp_server:stop(Port).
 
 server(Port) ->
     tcp_server:start_raw_server(Port, 
